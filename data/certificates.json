@@ -1,0 +1,54 @@
+[
+  {
+    "_id": "6838de29b2a7c508ef3ae53d",
+    "certificateId": "UDSM-2024-123456",
+    "studentName": "John Doe",
+    "course": "Bachelor of Science in Computer Science",
+    "institution": "University of Dar es Salaam",
+    "graduationDate": "2024-07-15T00:00:00.000Z",
+    "grade": "First Class",
+    "encryptedData": "4a6f2c3e5b7a8d9f0e1c2b3a4d5e6f7a",
+    "iv": "1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p",
+    "salt": "6f7e8d9c0b1a2c3d4e5f6a7b8c9d0e1f",
+    "tag": "9a8b7c6d5e4f3g2h1i0j9k8l7m6n5o4p",
+    "dataHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "issuedBy": {
+      "_id": "6838ddda054304510e9a909a",
+      "email": "jojo@gmail.com"
+    },
+    "issuedAt": "2024-01-01T00:00:00.000Z",
+    "status": "active"
+  },
+  {
+    "certificateId": "SUA-2024-654321",
+    "studentName": "Jane Smith",
+    "course": "Bachelor of Science in Agriculture",
+    "institution": "Sokoine University of Agriculture",
+    "graduationDate": "2024-07-20T00:00:00.000Z",
+    "grade": "Second Class Upper",
+    "encryptedData": "encrypted-data-placeholder",
+    "iv": "iv-placeholder",
+    "salt": "salt-placeholder",
+    "tag": "tag-placeholder",
+    "dataHash": "data-hash-placeholder",
+    "issuedBy": "6838ddda054304510e9a909a",
+    "issuedAt": "2024-01-01T00:00:00.000Z",
+    "status": "active"
+  },
+  {
+    "certificateId": "MZUM-2024-789012",
+    "studentName": "Peter Mwanza",
+    "course": "Bachelor of Business Administration",
+    "institution": "Mzumbe University",
+    "graduationDate": "2024-08-10T00:00:00.000Z",
+    "grade": "Second Class Upper",
+    "encryptedData": "encrypted-data-placeholder",
+    "iv": "iv-placeholder",
+    "salt": "salt-placeholder",
+    "tag": "tag-placeholder",
+    "dataHash": "data-hash-placeholder",
+    "issuedBy": "6838ddda054304510e9a909a", 
+    "issuedAt": "2024-01-01T00:00:00.000Z",
+    "status": "active"
+  }
+]
