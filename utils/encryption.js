@@ -25,7 +25,7 @@ class EncryptionService {
       const key = this.deriveKey(masterKey, salt)
 
       // Create cipher
-      const cipher = crypto.createCipher(this.algorithm, key)
+      const cipher = crypto.createCipheriv(this.algorithm, key, iv);
       cipher.setAAD(Buffer.from("certificate-data", "utf8"))
 
       // Encrypt data

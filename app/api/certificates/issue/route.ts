@@ -10,9 +10,19 @@ const certificateSchema = z.object({
   studentName: z.string().min(2, "Student name must be at least 2 characters").max(100),
   course: z.string().min(2, "Course name must be at least 2 characters").max(200),
   institution: z.string().min(2, "Institution name must be at least 2 characters").max(100),
-  graduationDate: z.string().datetime("Please provide a valid graduation date"),
+  graduationDate: z.string()
+    .refine((val) => {
+      try {
+        const date = new Date(val);
+        return !isNaN(date.getTime()); 
+      } catch (error) {
+        return false;
+      }
+    }, "Please provide a valid graduation date (YYYY-MM-DD)")
+    .transform((val) => new Date(val)), // Transform the valid string to a Date object
   grade: z.enum(["First Class", "Second Class Upper", "Second Class Lower", "Pass", "Distinction", "Merit"]),
-})
+});
+
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,6 +48,7 @@ export async function POST(request: NextRequest) {
     const validatedData = certificateSchema.parse(body)
 
     const { certificateId, studentName, course, institution, graduationDate, grade } = validatedData
+    console.log(validatedData)
 
     // Check if certificate ID already exists
     const existingCertificate = await Certificate.findOne({ certificateId })

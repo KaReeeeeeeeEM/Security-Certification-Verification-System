@@ -95,6 +95,7 @@ export function IssueForm({ onIssue, loading, user }: IssueFormProps) {
     e.preventDefault()
     if (validateForm()) {
       await onIssue(formData)
+      console.log(formData)
       // Reset form on success
       setFormData({
         certificateId: "",
