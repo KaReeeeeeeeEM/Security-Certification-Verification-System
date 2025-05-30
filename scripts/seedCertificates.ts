@@ -9,7 +9,7 @@ async function seedCertificates() {
     const certificates = [
       {
         certificateId: "UDSM-2024-123456",
-        studentName: "John Doe",
+        studentName: "Salum Bakari",
         course: "Bachelor of Science in Computer Science",
         institution: "University of Dar es Salaam",
         graduationDate: new Date("2024-07-15"),

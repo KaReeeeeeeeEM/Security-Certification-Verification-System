@@ -181,7 +181,7 @@ export function IssueForm({ onIssue, loading, user }: IssueFormProps) {
                 id="student-name"
                 value={formData.studentName}
                 onChange={(e) => handleInputChange("studentName", e.target.value)}
-                placeholder="John Doe Mwalimu"
+                placeholder="Salum Bakari Mwalimu"
                 className={`input-dark focus-ring ${errors.studentName ? "border-error" : ""}`}
               />
               {errors.studentName && <p className="text-error text-sm mt-1">{errors.studentName}</p>}

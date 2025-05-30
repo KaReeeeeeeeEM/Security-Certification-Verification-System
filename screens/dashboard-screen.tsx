@@ -79,7 +79,7 @@ export function DashboardScreen({
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
-                className="data-[state=active]:bg-surface-elevated data-[state=active]:shadow-sm text-text-primary flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap"
+                className="data-[state=active]:bg-surface-elevated data-[state=active]:shadow-sm text-text-primary flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap pb-2"
               >
                 <tab.icon className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden xs:inline">{tab.label}</span>
