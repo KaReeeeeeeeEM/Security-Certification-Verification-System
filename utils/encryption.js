@@ -51,25 +51,29 @@ class EncryptionService {
   decrypt(encryptedData, iv, salt, tag, masterKey) {
     try {
       // Convert hex strings back to buffers
-      const ivBuffer = Buffer.from(iv, "hex")
-      const saltBuffer = Buffer.from(salt, "hex")
-      const tagBuffer = Buffer.from(tag, "hex")
+      const ivBuffer = Buffer.from(iv, "hex");
+      if (ivBuffer.length !== this.ivLength) {
+        throw new Error("Invalid initialization vector length");
+      }
+
+      const saltBuffer = Buffer.from(salt, "hex");
+      const tagBuffer = Buffer.from(tag, "hex");
 
       // Derive decryption key
-      const key = this.deriveKey(masterKey, saltBuffer)
+      const key = this.deriveKey(masterKey, saltBuffer);
 
       // Create decipher
-      const decipher = crypto.createDecipheriv(this.algorithm, key, ivBuffer)
-      decipher.setAAD(Buffer.from("certificate-data", "utf8"))
-      decipher.setAuthTag(tagBuffer)
+      const decipher = crypto.createDecipheriv(this.algorithm, key, ivBuffer);
+      decipher.setAAD(Buffer.from("certificate-data", "utf8"));
+      decipher.setAuthTag(tagBuffer);
 
       // Decrypt data
-      let decrypted = decipher.update(encryptedData, "hex", "utf8")
-      decrypted += decipher.final("utf8")
+      let decrypted = decipher.update(encryptedData, "hex", "utf8");
+      decrypted += decipher.final("utf8");
 
-      return JSON.parse(decrypted)
+      return JSON.parse(decrypted);
     } catch (error) {
-      throw new Error(`Decryption failed: ${error.message}`)
+      throw new Error(`Decryption failed: ${error.message}`);
     }
   }
 

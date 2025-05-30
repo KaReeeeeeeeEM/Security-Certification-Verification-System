@@ -37,6 +37,12 @@ export async function GET(request: NextRequest, { params }: { params: { certific
 
     try {
       console.log(certificate)
+
+      // Validate encrypted data fields
+      if (!certificate.iv || !certificate.salt || !certificate.tag || !certificate.encryptedData) {
+        throw new Error("Missing encryption fields in certificate");
+      }
+
       // Decrypt certificate data for verification
       const encryptionService = require("@/utils/encryption")
       const decryptedData = encryptionService.decrypt(

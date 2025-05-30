@@ -1,9 +1,26 @@
 "use client"
+
+import { useState } from "react"
 import { Search, Plus, Users } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { VerificationForm } from "@/components/certificate/verification-form"
 import { VerificationResult } from "@/components/certificate/verification-result"
 import { SecurityFeatures } from "@/components/certificate/security-features"
+import { IssueForm } from "@/components/certificate/issue-form"
+import { ManagementTable } from "@/components/certificate/management-table"
+import { CertificateDetailsModal } from "@/components/certificate/certificate-details-modal"
+
+interface Certificate {
+  certificateId: string
+  studentName: string
+  course: string
+  institution: string
+  graduationDate: string
+  grade: string
+  status: "active" | "revoked" | "expired"
+  issuedAt: string
+  issuedBy: string
+}
 
 interface DashboardScreenProps {
   user: {
@@ -12,11 +29,37 @@ interface DashboardScreenProps {
     institution?: string
   }
   onVerifyCertificate: (certificateId: string) => Promise<any>
+  onIssueCertificate: (certificateData: any) => Promise<void>
+  onRevokeCertificate: (certificateId: string, reason: string) => Promise<void>
+  onLoadCertificates: () => Promise<Certificate[]>
   loading: boolean
   verificationResult: any
+  certificates: Certificate[]
 }
 
-export function DashboardScreen({ user, onVerifyCertificate, loading, verificationResult }: DashboardScreenProps) {
+export function DashboardScreen({
+  user,
+  onVerifyCertificate,
+  onIssueCertificate,
+  onRevokeCertificate,
+  onLoadCertificates,
+  loading,
+  verificationResult,
+  certificates,
+}: DashboardScreenProps) {
+  const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null)
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false)
+
+  const handleViewDetails = (certificate: Certificate) => {
+    setSelectedCertificate(certificate)
+    setDetailsModalOpen(true)
+  }
+
+  const handleCloseDetails = () => {
+    setSelectedCertificate(null)
+    setDetailsModalOpen(false)
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -60,22 +103,22 @@ export function DashboardScreen({ user, onVerifyCertificate, loading, verificati
           {/* Certificate Issuance Tab (Admin Only) */}
           {user.role === "admin" && (
             <TabsContent value="issue" className="mt-6">
-              <div className="text-center py-12">
-                <Plus className="h-16 w-16 text-text-muted mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-text-primary mb-2">Issue Certificate</h3>
-                <p className="text-text-muted">Certificate issuance form will be implemented here</p>
-              </div>
+              <IssueForm onIssue={onIssueCertificate} loading={loading} user={user} />
             </TabsContent>
           )}
 
           {/* Certificate Management Tab (Admin Only) */}
           {user.role === "admin" && (
             <TabsContent value="manage" className="mt-6">
-              <div className="text-center py-12">
-                <Users className="h-16 w-16 text-text-muted mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-text-primary mb-2">Manage Certificates</h3>
-                <p className="text-text-muted">Certificate management interface will be implemented here</p>
-              </div>
+              <ManagementTable
+                certificates={certificates}
+                onRefresh={async () => {
+                  await onLoadCertificates();
+                }}
+                onRevoke={onRevokeCertificate}
+                onViewDetails={handleViewDetails}
+                loading={loading}
+              />
             </TabsContent>
           )}
         </Tabs>
@@ -83,6 +126,9 @@ export function DashboardScreen({ user, onVerifyCertificate, loading, verificati
         {/* Security Information */}
         <SecurityFeatures />
       </div>
+
+      {/* Certificate Details Modal */}
+      <CertificateDetailsModal certificate={selectedCertificate} open={detailsModalOpen} onClose={handleCloseDetails} />
     </div>
   )
 }
