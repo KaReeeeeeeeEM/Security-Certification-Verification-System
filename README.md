@@ -5,37 +5,87 @@
 
 ## Features
 
-* **User Authentication:** Secure registration and login for different user roles.
-* **Role-Based Access Control (RBAC):**
-  * `<span class="selected">admin</span>` role: Can issue new certificates.
-  * `<span class="selected">user</span>` role: Can verify existing certificates.
-* **Certificate Issuance (Admin):** Admins can issue certificates, storing student details and encrypting sensitive certificate data. A cryptographic hash of the original data is stored for integrity verification.
-* **Certificate Verification (User):** Users can verify a certificate by entering its unique ID, checking its authenticity and integrity.
-* **Security Measures:**
-  * **Password hashing using **`<span class="selected">bcrypt</span>`.
+* User Authentication: Secure registration and login for different user roles.
+* Role-Based Access Control (RBAC):
+  * `admin` role: Can issue new certificates.
+  * `user` role: Can verify existing certificates.
+* Certificate Issuance (Admin): Admins can issue certificates, storing student details and encrypting sensitive certificate data. A cryptographic hash of the original data is stored for integrity verification.
+* Certificate Verification (User): Users can verify a certificate by entering its unique ID, checking its authenticity and integrity.
+* Security Measures:
+  * **Password hashing using** `bcrypt`.
   * **JWT for secure session management.**
-  * **Input validation and sanitization (**`<span class="selected">express-validator</span>`) to prevent XSS attacks.
+  * **Input validation and sanitization (`express-validator`) to prevent XSS attacks.**
   * **AES-256 encryption for sensitive certificate data at rest.**
   * **SHA-256 hashing for certificate data integrity checks.**
-  * **Conceptual HTTPS setup (comments in **`<span class="selected">server.js</span>`).
+  * **Conceptual HTTPS setup (comments in `server.js`).**
+
+## How It Works
+
+The system operates through the following key processes:
+
+1. **User Authentication:**
+
+   * When a user (admin or regular user) registers, their password is securely hashed using `bcrypt` before being stored in the database.
+   * Upon login, the entered password is also hashed and compared with the stored hash to authenticate the user.
+   * Upon successful login, a JWT (JSON Web Token) is issued to the client. This token is used for subsequent requests to identify and authorize the user.
+2. **Certificate Issuance (Admin Role):**
+
+   * An administrator, after logging in, can access the certificate issuance form.
+   * The admin enters the required details such as student name, course, institution, graduation date, and grade.
+   * When the admin submits the form:
+     * The backend API (`/api/certificates/issue`) receives the data.
+     * The data is validated on the server.
+     * Sensitive certificate data is encrypted using AES-256 encryption with a unique Initialization Vector (`iv`), salt, and authentication tag.
+     * A SHA-256 hash (a unique digital fingerprint) of the original certificate data is generated.
+     * All the encrypted data, IV, salt, tag, and the data hash, along with the other certificate details, are stored in the MongoDB database. The `issuedBy` field links the certificate to the admin user who issued it.
+3. **Certificate Verification (Public Access):**
+
+   * Any user can access the certificate verification page.
+   * The user enters a unique Certificate ID.
+   * The frontend sends a request to the backend API (`/api/certificates/verify/:certificateId`).
+   * The backend retrieves the certificate data based on the provided ID.
+   * The backend then:
+     * Decrypts the `encryptedData` using the stored IV, salt, and tag with the secret AES encryption key.
+     * Generates a new SHA-256 hash of the decrypted data.
+     * Compares this newly generated hash with the stored `dataHash`.
+   * If the hashes match, it confirms the integrity of the certificate data (it hasn't been tampered with).
+   * The system then returns the decrypted certificate details and a verification status (valid/invalid integrity).
+
+## Security Principles Used
+
+This system employs several security principles to ensure the authenticity and integrity of academic certificates:
+
+1. **Encryption (Keeping Secrets Safe):** Sensitive certificate data is scrambled using AES-256 encryption. This means that even if someone gains unauthorized access to the database, the core information about the certificate is unreadable without the secret encryption key. This is like putting the important details in a digital lockbox.
+2. **Integrity Protection (Ensuring No Tampering):** A SHA-256 hash (a unique digital fingerprint) is generated for each certificate's data. This hash is stored alongside the encrypted data. When a certificate is verified, a new hash is calculated from the decrypted data and compared to the stored hash. If they match, it proves that the certificate data has not been altered since it was issued. This is like having a tamper-proof seal on the certificate.
+3. **Authentication (Verifying User Identity):** When users (especially admins) log in, their identity is verified using `bcrypt` to securely compare their entered password with the stored, hashed password. This ensures that only legitimate users can access the system's features.
+4. **Authorization (Controlling Access):** Role-Based Access Control (RBAC) is used to ensure that only administrators can issue new certificates, while other users might only have permission to verify them. This prevents unauthorized actions within the system.
+
+## Achieving Security in Node.js
+
+These security principles were implemented in the Node.js backend using the following tools and techniques:
+
+* **Encryption and Hashing:** The built-in `crypto` module in Node.js was used for AES-256 encryption (`crypto.createCipheriv`) and SHA-256 hashing (`crypto.createHash('sha256')`). This module provides the necessary cryptographic functions.
+* **Password Hashing:** The `bcrypt` library was used to securely hash user passwords before storing them in the database, making it very difficult for attackers to retrieve the original passwords even if they gain access to the database.
+* **Authentication and Authorization:** The `jsonwebtoken` library was used to create and verify JSON Web Tokens (JWTs). These tokens are issued upon successful login and are used to authenticate subsequent requests. The user's role (e.g., 'admin', 'user') is often included in the JWT, allowing the backend to implement authorization checks in API routes.
+* **Input Validation:** While mentioned, the specifics of `express-validator` usage would be in the backend code (likely in the Express.js routes) to ensure that data received from the frontend is valid and sanitized to prevent common web vulnerabilities like Cross-Site Scripting (XSS).
 
 ## Tanzanian Context
 
-**This system directly addresses ** **certificate fraud** **, a significant challenge in educational institutions globally, including in Tanzania. By providing a secure, verifiable digital record of academic achievements, it aims to:**
+**This system directly addresses** **certificate fraud**, a significant challenge in educational institutions globally, including in Tanzania. By providing a secure, verifiable digital record of academic achievements, it aims to:
 
-* **Enhance Trust:** Restore confidence in academic credentials issued by Tanzanian universities.
-* **Combat Forgery:** Make it significantly harder to create fake certificates.
-* **Streamline Verification:** Provide a quick and reliable way for employers, other institutions, or individuals to verify academic qualifications.
-* **Accessibility:** The simple UI and web-based approach aim to be accessible even with basic internet connectivity, common in various parts of Tanzania.
+* Enhance Trust: Restore confidence in academic credentials issued by Tanzanian universities.
+* Combat Forgery: Make it significantly harder to create fake certificates.
+* Streamline Verification: Provide a quick and reliable way for employers, other institutions, or individuals to verify academic qualifications.
+* Accessibility: The simple UI and web-based approach aim to be accessible even with basic internet connectivity, common in various parts of Tanzania.
 
 ## Tech Stack
 
-* **Frontend:** React.js (with Ant Design for UI)
-* **Backend:** Node.js, Express.js
-* **Database:** MongoDB (via Mongoose ODM)
-* **Authentication:**`<span class="selected">bcrypt</span>`, `<span class="selected">jsonwebtoken</span>`
-* **Validation:**`<span class="selected">express-validator</span>`
-* **Encryption:** Node.js `<span class="selected">crypto</span>` module
+* Frontend: React.js (with radixUI for UI) with NextJs 15
+* Backend: Node.js, Express.js
+* Database: MongoDB (via Mongoose ODM)
+* Authentication: `bcrypt`, `jsonwebtoken`
+* Validation: `express-validator`
+* Encryption: Node.js `crypto` module
 
 ## Setup Instructions
 
@@ -45,108 +95,6 @@
 * **npm (Node Package Manager)**
 * **MongoDB Atlas account (or local MongoDB instance)**
 
-### 1. Backend Setup (`<span class="selected">server</span>` directory)
+### 1. Backend Setup (`server` directory)
 
-**Navigate to the **`<span class="selected">server</span>` directory:
-
-```
-cd server
-
-```
-
-**Install dependencies:**
-
-```
-npm install
-
-```
-
-**Create a **`<span class="selected">.env</span>` file in the `<span class="selected">server</span>` directory with the following content:
-
-```
-MONGO_URI=YOUR_MONGODB_ATLAS_CONNECTION_STRING
-JWT_SECRET=YOUR_VERY_STRONG_JWT_SECRET_KEY
-AES_ENCRYPTION_KEY=YOUR_32_BYTE_AES_KEY_FOR_CERTIFICATE_ENCRYPTION
-
-```
-
-* **Replace **`<span class="selected">YOUR_MONGODB_ATLAS_CONNECTION_STRING</span>` with your MongoDB Atlas connection string (e.g., `<span class="selected">mongodb+srv://<username>:<password>@cluster0.abcde.mongodb.net/certificate_db?retryWrites=true&w=majority</span>`).
-* **Replace **`<span class="selected">YOUR_VERY_STRONG_JWT_SECRET_KEY</span>` with a long, random string (e.g., generated by `<span class="selected">node -e "console.log(crypto.randomBytes(32).toString('hex'))"</span>`).
-* **Replace **`<span class="selected">YOUR_32_BYTE_AES_KEY_FOR_CERTIFICATE_ENCRYPTION</span>` with a 32-byte (64 hex characters) random string for AES-256 encryption (e.g., `<span class="selected">node -e "console.log(crypto.randomBytes(32).toString('hex'))"</span>`). **Keep this key secret and secure!**
-
-**Run the backend server:**
-
-```
-npm start
-
-```
-
-**The server will run on **`<span class="selected">http://localhost:5000</span>`.
-
-### 2. Frontend Setup (`<span class="selected">client</span>` directory)
-
-**Navigate to the **`<span class="selected">client</span>` directory:
-
-```
-cd client
-
-```
-
-**Install dependencies:**
-
-```
-npm install
-
-```
-
-**Create a **`<span class="selected">.env</span>` file in the `<span class="selected">client</span>` directory with the following content:
-
-```
-REACT_APP_API_URL=http://localhost:5000/api
-
-```
-
-* **Ensure this matches your backend server's URL.**
-
-**Run the React development server:**
-
-```
-npm start
-
-```
-
-**This will open the application in your browser, usually at **`<span class="selected">http://localhost:3000</span>`.
-
-## Initial Admin User
-
-**For testing purposes, you can manually create an admin user in your MongoDB database using a tool like MongoDB Compass or Atlas UI.**
-
-* **Collection:**`<span class="selected">users</span>`
-* **Example Document:**
-
-  ```
-  {
-    "email": "admin@example.com",
-    "password": "$2b$10$YOUR_BCRYPT_HASH_HERE", // Replace with a bcrypt hash of "password123" or similar
-    "role": "admin"
-  }
-
-  ```
-
-  **You can generate a bcrypt hash for "password123" by running a small Node.js script:**
-
-  ```
-  const bcrypt = require('bcrypt');
-  bcrypt.hash('password123', 10, (err, hash) => {
-      console.log(hash);
-  });
-
-  ```
-
-  **Then copy the outputted hash into your MongoDB document.**
-
-## Usage
-
-1. **Register/Login:** Access the application at `<span class="selected">http://localhost:3000</span>`. You can register as a `<span class="selected">user</span>`. For `<span class="selected">admin</span>` access, use the manually created admin account.
-2. **Admin Dashboard:** If logged in as an `<span class="selected">admin</span>`, navigate to `<span class="selected">/admin</span>` to issue certificates.
-3. **Verify Certificate:** Anyone (even unauthenticated) can navigate to `<span class="selected">/verify</span>` to enter a certificate ID and verify its details.
+**Navigate to the `server` directory:**
