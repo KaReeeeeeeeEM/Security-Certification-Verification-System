@@ -84,7 +84,7 @@ export function CertificateDetailsModal({ certificate, open, onClose }: Certific
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-surface-elevated border-border max-w-2xl">
+      <DialogContent className="bg-surface-elevated border-border max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-text-primary flex items-center gap-2">
             <Shield className="h-5 w-5 text-primary-400" />
@@ -95,80 +95,82 @@ export function CertificateDetailsModal({ certificate, open, onClose }: Certific
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Status Banner */}
-          <div className="glass-dark rounded-lg p-4 border border-border">
-            <div className="flex items-center justify-between">
+          <div className="glass-dark rounded-lg p-3 sm:p-4 border border-border">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <CheckCircle className="h-6 w-6 text-success" />
+                <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-success" />
                 <div>
-                  <h3 className="font-semibold text-text-primary">Certificate Status</h3>
-                  <p className="text-sm text-text-muted">This certificate has been verified and encrypted</p>
+                  <h3 className="font-semibold text-text-primary text-sm sm:text-base">Certificate Status</h3>
+                  <p className="text-xs sm:text-sm text-text-muted">This certificate has been verified and encrypted</p>
                 </div>
               </div>
-              <Badge className={`${getStatusColor(certificate.status)} flex items-center gap-1`}>
+              <Badge className={`${getStatusColor(certificate.status)} flex items-center gap-1 text-xs sm:text-sm`}>
                 {certificate.status.charAt(0).toUpperCase() + certificate.status.slice(1)}
               </Badge>
             </div>
           </div>
 
           {/* Certificate Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            <div className="space-y-3 sm:space-y-4">
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-text-muted flex items-center gap-1">
+                <Label className="text-xs sm:text-sm font-medium text-text-muted flex items-center gap-1">
                   <Hash className="h-3 w-3" />
                   Certificate ID
                 </Label>
-                <p className="font-mono text-lg font-semibold text-text-primary bg-surface rounded-lg p-3">
+                <p className="font-mono text-sm sm:text-lg font-semibold text-text-primary bg-surface rounded-lg p-2 sm:p-3 break-all">
                   {certificate.certificateId}
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-text-muted flex items-center gap-1">
+                <Label className="text-xs sm:text-sm font-medium text-text-muted flex items-center gap-1">
                   <User className="h-3 w-3" />
                   Student Name
                 </Label>
-                <p className="text-lg font-semibold text-text-primary">{certificate.studentName}</p>
+                <p className="text-base sm:text-lg font-semibold text-text-primary">{certificate.studentName}</p>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-text-muted flex items-center gap-1">
+                <Label className="text-xs sm:text-sm font-medium text-text-muted flex items-center gap-1">
                   <Building className="h-3 w-3" />
                   Institution
                 </Label>
-                <p className="text-text-primary">{certificate.institution}</p>
+                <p className="text-sm sm:text-base text-text-primary">{certificate.institution}</p>
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-text-muted flex items-center gap-1">
+                <Label className="text-xs sm:text-sm font-medium text-text-muted flex items-center gap-1">
                   <GraduationCap className="h-3 w-3" />
                   Course
                 </Label>
-                <p className="text-text-primary">{certificate.course}</p>
+                <p className="text-sm sm:text-base text-text-primary">{certificate.course}</p>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-text-muted flex items-center gap-1">
+                <Label className="text-xs sm:text-sm font-medium text-text-muted flex items-center gap-1">
                   <Award className="h-3 w-3" />
                   Grade Achieved
                 </Label>
-                <Badge className="bg-gradient-primary text-white font-semibold">{certificate.grade}</Badge>
+                <Badge className="bg-gradient-primary text-white font-semibold text-xs sm:text-sm">
+                  {certificate.grade}
+                </Badge>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-text-muted flex items-center gap-1">
+                <Label className="text-xs sm:text-sm font-medium text-text-muted flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
                   Important Dates
                 </Label>
                 <div className="space-y-1">
-                  <p className="text-sm text-text-primary">
+                  <p className="text-xs sm:text-sm text-text-primary">
                     Graduated: {new Date(certificate.graduationDate).toLocaleDateString()}
                   </p>
-                  <p className="text-sm text-text-muted">
+                  <p className="text-xs sm:text-sm text-text-muted">
                     Issued: {new Date(certificate.issuedAt).toLocaleDateString()}
                   </p>
                 </div>
@@ -177,14 +179,14 @@ export function CertificateDetailsModal({ certificate, open, onClose }: Certific
           </div>
 
           {/* Security Information */}
-          <div className="glass-dark rounded-lg p-4 border border-primary-500/20">
+          <div className="glass-dark rounded-lg p-3 sm:p-4 border border-primary-500/20">
             <div className="flex items-start gap-3">
               <div className="bg-primary-500/20 rounded-full p-2">
-                <Shield className="h-4 w-4 text-primary-400" />
+                <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-primary-400" />
               </div>
               <div>
-                <h4 className="text-primary-400 font-medium mb-1">Security Features</h4>
-                <ul className="text-text-muted text-sm space-y-1">
+                <h4 className="text-primary-400 font-medium mb-1 text-sm sm:text-base">Security Features</h4>
+                <ul className="text-text-muted text-xs sm:text-sm space-y-1">
                   <li>• AES-256 encrypted certificate data</li>
                   <li>• SHA-256 integrity verification</li>
                   <li>• Tamper-proof digital signature</li>
@@ -195,15 +197,15 @@ export function CertificateDetailsModal({ certificate, open, onClose }: Certific
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3 pt-4 border-t border-border">
-            <Button onClick={printCertificate} className="btn-primary flex-1">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-border">
+            <Button onClick={printCertificate} className="btn-primary flex-1 text-sm sm:text-base">
               <GraduationCap className="h-4 w-4 mr-2" />
               Print Certificate
             </Button>
             <Button
               onClick={onClose}
               variant="outline"
-              className="border-border text-text-primary hover:bg-surface-hover"
+              className="border-border text-text-primary hover:bg-surface-hover text-sm sm:text-base"
             >
               Close
             </Button>

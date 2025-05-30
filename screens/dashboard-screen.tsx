@@ -31,7 +31,7 @@ interface DashboardScreenProps {
   onVerifyCertificate: (certificateId: string) => Promise<any>
   onIssueCertificate: (certificateData: any) => Promise<void>
   onRevokeCertificate: (certificateId: string, reason: string) => Promise<void>
-  onLoadCertificates: () => Promise<Certificate[]>
+  onLoadCertificates: () => Promise<void>
   loading: boolean
   verificationResult: any
   certificates: Certificate[]
@@ -60,41 +60,37 @@ export function DashboardScreen({
     setDetailsModalOpen(false)
   }
 
+  const tabsConfig = [
+    { value: "verify", label: "Verify", icon: Search, available: true },
+    { value: "issue", label: "Issue", icon: Plus, available: user.role === "admin" },
+    { value: "manage", label: "Manage", icon: Users, available: user.role === "admin" },
+  ].filter((tab) => tab.available)
+
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         <Tabs defaultValue="verify" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-surface/50 backdrop-blur-sm border border-border">
-            <TabsTrigger
-              value="verify"
-              className="data-[state=active]:bg-surface-elevated data-[state=active]:shadow-sm text-text-primary"
-            >
-              <Search className="h-4 w-4 mr-2" />
-              Verify Certificate
-            </TabsTrigger>
-            {user.role === "admin" && (
+          {/* Mobile-friendly tabs */}
+          <TabsList
+            className="grid w-full bg-surface/50 backdrop-blur-sm border border-border overflow-x-auto"
+            style={{ gridTemplateColumns: `repeat(${tabsConfig.length}, minmax(0, 1fr))` }}
+          >
+            {tabsConfig.map((tab) => (
               <TabsTrigger
-                value="issue"
-                className="data-[state=active]:bg-surface-elevated data-[state=active]:shadow-sm text-text-primary"
+                key={tab.value}
+                value={tab.value}
+                className="data-[state=active]:bg-surface-elevated data-[state=active]:shadow-sm text-text-primary flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap"
               >
-                <Plus className="h-4 w-4 mr-2" />
-                Issue Certificate
+                <tab.icon className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden xs:inline">{tab.label}</span>
+                <span className="xs:hidden">{tab.label.slice(0, 3)}</span>
               </TabsTrigger>
-            )}
-            {user.role === "admin" && (
-              <TabsTrigger
-                value="manage"
-                className="data-[state=active]:bg-surface-elevated data-[state=active]:shadow-sm text-text-primary"
-              >
-                <Users className="h-4 w-4 mr-2" />
-                Manage Certificates
-              </TabsTrigger>
-            )}
+            ))}
           </TabsList>
 
           {/* Certificate Verification Tab */}
-          <TabsContent value="verify" className="mt-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="verify" className="mt-4 sm:mt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               <VerificationForm onVerify={onVerifyCertificate} loading={loading} />
               {verificationResult && <VerificationResult result={verificationResult} />}
             </div>
@@ -102,14 +98,14 @@ export function DashboardScreen({
 
           {/* Certificate Issuance Tab (Admin Only) */}
           {user.role === "admin" && (
-            <TabsContent value="issue" className="mt-6">
+            <TabsContent value="issue" className="mt-4 sm:mt-6">
               <IssueForm onIssue={onIssueCertificate} loading={loading} user={user} />
             </TabsContent>
           )}
 
           {/* Certificate Management Tab (Admin Only) */}
           {user.role === "admin" && (
-            <TabsContent value="manage" className="mt-6">
+            <TabsContent value="manage" className="mt-4 sm:mt-6">
               <ManagementTable
                 certificates={certificates}
                 onRefresh={async () => {
