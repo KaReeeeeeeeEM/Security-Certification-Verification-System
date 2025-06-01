@@ -240,7 +240,7 @@ export function ManagementTable({ certificates, onRefresh, onRevoke, onViewDetai
                   <SelectTrigger className="input-dark focus-ring">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-surface-elevated border-border">
+                  <SelectContent className="bg-neutral-800 border-border">
                     <SelectItem value="all" className="text-text-primary hover:bg-surface-hover">
                       All Status
                     </SelectItem>
@@ -263,7 +263,7 @@ export function ManagementTable({ certificates, onRefresh, onRevoke, onViewDetai
                   <SelectTrigger className="input-dark focus-ring">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-surface-elevated border-border">
+                  <SelectContent className="bg-neutral-800 border-border">
                     <SelectItem value="all" className="text-text-primary hover:bg-surface-hover">
                       All Grades
                     </SelectItem>
@@ -296,7 +296,7 @@ export function ManagementTable({ certificates, onRefresh, onRevoke, onViewDetai
                   <SelectTrigger className="input-dark focus-ring">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-surface-elevated border-border">
+                  <SelectContent className="bg-neutral-800 border-border">
                     <SelectItem value="issuedAt-desc" className="text-text-primary hover:bg-surface-hover">
                       Newest First
                     </SelectItem>

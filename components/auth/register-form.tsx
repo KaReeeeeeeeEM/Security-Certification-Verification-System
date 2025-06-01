@@ -84,7 +84,7 @@ export function RegisterForm({ onRegister, loading }: RegisterFormProps) {
           <SelectTrigger className="input-dark focus-ring">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="bg-surface-elevated border-border">
+          <SelectContent className="bg-neutral-800 border-border">
             <SelectItem value="user" className="text-text-primary hover:bg-surface-hover">
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4" />
