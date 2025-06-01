@@ -439,7 +439,7 @@ export function ManagementTable({ certificates, onRefresh, onRevoke, onViewDetai
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="bg-surface-elevated border-border" align="end">
+                        <DropdownMenuContent className="bg-neutral-800 border-border" align="end">
                           <DropdownMenuItem
                             onClick={() => onViewDetails(certificate)}
                             className="text-text-primary hover:bg-surface-hover focus:bg-surface-hover"
